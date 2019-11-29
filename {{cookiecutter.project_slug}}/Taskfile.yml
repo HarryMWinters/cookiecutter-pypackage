@@ -1,0 +1,43 @@
+version: "2"
+
+tasks:
+  default:
+    cmds:
+      - echo "No default task."
+    silent: true
+
+  start:
+    cmds:
+      - docker-compose --file pypi-server/Docker-compose.yaml up
+
+  bootstrap:
+    cmds:
+      - brew install pipenv
+      - pip3 install pre-commit
+      - pre-commit install
+      - pipenv install --dev
+
+  compile_proto:
+    cmds:
+      - pipenv run python -m grpc_tools.protoc
+        -IgRPC/protos/
+        --python_out=gRPC/protolib/protolib
+        --grpc_python_out=gRPC/protolib/protolib
+        myprotos.proto
+
+  build_package:
+    cmds:
+      - pipenv run python gRPC/protolib/setup.py sdist bdist_wheel
+      - pipenv run twine check dist/*
+
+  publish_package:
+    cmds:
+      - pipenv run twine upload --repository-url https://localhost:8080 dist/*
+
+  test:
+    cmds:
+      - echo "No tests."
+    silent: true
+# Worth Looking Into
+# pip install bumpversion
+# bumpversion --current-version 1.0.0 minor setup.py reader/__init__.py
