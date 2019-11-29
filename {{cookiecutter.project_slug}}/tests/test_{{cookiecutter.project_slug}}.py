@@ -19,5 +19,5 @@ class Test{{ cookiecutter.project_slug|title }}(unittest.TestCase):
     def test_000_something(self):
         self.assertEqual({{ cookiecutter.project_slug }}.hello_{{ cookiecutter.project_slug }}(), "foo")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

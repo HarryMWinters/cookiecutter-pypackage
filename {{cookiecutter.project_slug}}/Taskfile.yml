@@ -19,6 +19,7 @@ tasks:
       - pipenv install --dev
       - pipenv install pylint --dev
       - pipenv install black --dev --pre
+      - pipenv install twine --dev
       - git add *
       - pre-commit
 
