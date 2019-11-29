@@ -8,36 +8,30 @@ tasks:
 
   start:
     cmds:
-      - docker-compose --file pypi-server/Docker-compose.yaml up
+      - pipenv run python {{cookiecutter.project_slug}}/{{cookiecutter.project_slug}}.py
 
   bootstrap:
     cmds:
+      - git init
       - brew install pipenv
       - pip3 install pre-commit
       - pre-commit install
       - pipenv install --dev
-
-  compile_proto:
-    cmds:
-      - pipenv run python -m grpc_tools.protoc
-        -IgRPC/protos/
-        --python_out=gRPC/protolib/protolib
-        --grpc_python_out=gRPC/protolib/protolib
-        myprotos.proto
+      - pipenv install pylint --dev
+      - pipenv install black --dev --pre
+      - git add *
+      - pre-commit
 
   build_package:
     cmds:
-      - pipenv run python gRPC/protolib/setup.py sdist bdist_wheel
+      - pipenv run python setup.py sdist bdist_wheel
       - pipenv run twine check dist/*
 
   publish_package:
     cmds:
-      - pipenv run twine upload --repository-url https://localhost:8080 dist/*
+      - pipenv run twine upload dist/*
 
   test:
     cmds:
       - echo "No tests."
     silent: true
-# Worth Looking Into
-# pip install bumpversion
-# bumpversion --current-version 1.0.0 minor setup.py reader/__init__.py

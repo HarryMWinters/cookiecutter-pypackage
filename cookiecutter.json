@@ -1,14 +1,13 @@
 {
+  "project_name": "Python Boilerplate",
   "full_name": "Harry McPhee Winters",
   "email": "harry.mc.winters+{{ cookiecutter.project_name }}_author_info@gmail.com",
   "github_username": "harrymwinters",
-  "project_name": "Python Boilerplate",
   "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
   "project_short_description": "Calor dolor rubor et tumor.",
-  "pypi_username": "{{ cookiecutter.github_username }}",
+  "pypi_username": "hwinters",
   "version": "0.1.0",
-  "use_pytest": "n",
-  "create_author_file": "y",
+  "create_author_file": "n",
   "open_source_license": [
     "MIT license",
     "BSD license",
