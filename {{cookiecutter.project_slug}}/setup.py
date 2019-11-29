@@ -2,10 +2,10 @@
 
 """The setup script."""
 
-from setuptools import find_packages
-from setuptools import setup
 from typing import List
 
+from setuptools import find_packages
+from setuptools import setup
 
 with open("README.md") as readme_file:
     readme = readme_file.read()
@@ -25,7 +25,7 @@ test_requirements: List[str] = []
 } %}
 
 setup(
-    author="{{ cookiecutter.full_name.replace('\', '\\\"') }}",
+    author="{{ cookiecutter.full_name }}",
     author_email="{{ cookiecutter.email }}",
     python_requires=">=3.5",
     classifiers=[
@@ -42,13 +42,9 @@ setup(
         "Programming Language :: Python :: 3.8",
     ],
     description="{{ cookiecutter.project_short_description }}",
-
     entry_points={
-        "console_scripts": [
-            "{{ cookiecutter.project_slug }}={{ cookiecutter.project_slug }}.cli:main"
-        ]
+        "console_scripts": ["{{ cookiecutter.project_slug }}={{ cookiecutter.project_slug }}.cli:main"]
     },
-
     install_requires=requirements,
 {%- if cookiecutter.open_source_license in license_classifiers %}
     license="{{ cookiecutter.open_source_license }}",

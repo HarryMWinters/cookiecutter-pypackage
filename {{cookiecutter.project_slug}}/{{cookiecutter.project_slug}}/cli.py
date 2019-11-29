@@ -5,7 +5,6 @@ import argparse
 import sys
 
 
-
 def main():
     """Console script for {{cookiecutter.project_slug}}."""
     parser = argparse.ArgumentParser()
@@ -13,8 +12,7 @@ def main():
     args = parser.parse_args()
 
     print("Arguments: " + str(args._))
-    print("Replace this message by putting your code into "
-          "{{cookiecutter.project_slug}}.cli.main")
+    print("Replace this message by putting your code into {{cookiecutter.project_slug}}.cli.main")
     return 0
 
 

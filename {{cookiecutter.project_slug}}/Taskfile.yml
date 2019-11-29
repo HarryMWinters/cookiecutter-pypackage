@@ -21,7 +21,8 @@ tasks:
       - pipenv install black --dev --pre
       - pipenv install twine --dev
       - git add *
-      - pre-commit
+      - git commit -m "Initialized via bootstrap command in Taskfile."
+      - echo "Happy hacking you glorious code weasel!"
 
   build_package:
     cmds:
