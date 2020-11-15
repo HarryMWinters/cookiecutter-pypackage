@@ -1,5 +1,6 @@
-================================================
-Cookiecutter w/ Poetry, Pre-Commit, and Taskfile
-================================================
+# Python3.8 Cookiecutter w/ Poetry, Pre-Commit, and Taskfile
 
-.. code-block:: shell
+
+```sh
+$ cookiecutter https://github.com/HarryMWinters/cookiecutter-pypackage
+```
