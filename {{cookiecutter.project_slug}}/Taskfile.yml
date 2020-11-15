@@ -1,39 +1,85 @@
-version: "2"
+version: "3"
+
+dotenv: [".env"]
 
 tasks:
-  default:
+  install-poetry:
+    desc: "Install poetry package manager."
     cmds:
-      - echo "No default task."
+      - curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
+    status:
+      - poetry --version
+    generates:
+      - $HOME/.poetry/env
+
+  unit-test:
+    desc: "Run unit tests"
+    deps: [install-poetry, create-virtual-env]
+    cmds:
+      - source $HOME/.poetry/env && poetry run pytest
+        # --cov=fastapi_oidc \
+        # --cov-report=term-missing
+        # --cov-report=xml tests ${@}
     silent: true
-
-  start:
+  create-virtual-env:
+    desc: "Create poetry virtual env."
+    deps: [install-poetry]
     cmds:
-      - pipenv run python {{cookiecutter.project_slug}}/{{cookiecutter.project_slug}}.py
-
-  bootstrap:
+      - source $HOME/.poetry/env && poetry install
+  build:
+    desc: "Build python package for publication."
+    deps: [install-poetry]
     cmds:
-      - git init
-      - brew install pipenv
-      - pip3 install pre-commit
-      - pre-commit install
-      - pipenv install --dev
-      - pipenv install pylint --dev
-      - pipenv install black --dev --pre
-      - pipenv install twine --dev
-      - git add *
-      - git commit -m "Initialized via bootstrap command in Taskfile."
-      - echo "Happy hacking you glorious code weasel!"
-
-  build_package:
+      - poetry build
+    sources:
+      - {{ cookiecutter.project_slug }}/**
+      - poetry.lock
+      - pyproject.toml
+    generates:
+      - dist/**
+  publish:
+    desc: "Push package to PIPy"
+    deps: [build]
     cmds:
-      - pipenv run python setup.py sdist bdist_wheel
-      - pipenv run twine check dist/*
-
-  publish_package:
+      - echo "Publishing as $PYPI_USERNAME"
+      - poetry publish -u $PYPI_USERNAME -p $PYPI_PASSWORD
+    # sources:
+    #   # TODO This is erroneously registering as up to date
+    #   # After a build has been run :( )
+    #   - dist/**
+    #   - poetry.lock
+    #   - pyproject.toml
+    # status:
+    #   - echo "Return nonzero code if we shouldn't publish"
+  clean:
+    desc: "Remove artifacts and caches."
     cmds:
-      - pipenv run twine upload dist/*
-
-  test:
+      - rm -rf ./build ./dist ./*.egg-info __pycache__
+  pre-commit-ci:
+    desc: "Install and init pre-commits."
+    deps: [install-pre-commit-ci, init-pre-commit-ci]
     cmds:
-      - echo "No tests."
-    silent: true
+      - python3 pre-commit-2.8.2.pyz run --all-files
+  install-pre-commit-ci:
+    desc: "Install pre-commit without dependencies."
+    cmds:
+      - curl -OL https://github.com/pre-commit/pre-commit/releases/download/v2.8.2/pre-commit-2.8.2.pyz 
+      - python3 pre-commit-2.8.2.pyz
+    status:
+      - which pre-commit
+
+  init-pre-commit-ci:
+    desc: "Init pre-commit."
+    deps: [install-pre-commit-ci]
+    cmds:
+      - python3 pre-commit-2.8.2.pyz install
+    generates:
+    - .git/hooks/pre-commit
+
+  build_docs:
+    desc: "Build sphinc docs in /docs"
+    deps: [create-virtual-env]
+    cmds:
+      - |
+        cd docs && 
+        source $HOME/.poetry/env && poetry run make html
